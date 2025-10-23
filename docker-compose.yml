@@ -2,8 +2,7 @@ name: python-test-kit
 
 services:
   test:
-    # Ideally should put this on Azure DevOps Container Registry
-    image: suizer98/python-test-kit:latest
+    image: ghcr.io/suizer98/python-test-kit:latest
     build:
       context: .
       dockerfile: Dockerfile.test
@@ -49,7 +48,7 @@ services:
       # semgrep ci --supply-chain && echo 'Semgrep OK'
 
   mock:
-    image: suizer98/python-test-kit-mock:latest
+    image: ghcr.io/suizer98/python-test-kit-mock:latest
     build: .
     volumes:
       - ./:/usr/src/app

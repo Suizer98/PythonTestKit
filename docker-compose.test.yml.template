@@ -1,0 +1,46 @@
+services:
+  test:
+    image: ghcr.io/suizer98/python-test-kit:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./:/usr/src/app
+      - ./.git:/usr/src/app/.git
+      # - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /usr/src/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - SEMGREP_APP_TOKEN=${SEMGREP_APP_TOKEN:-}
+    profiles:
+      - test
+    command: 
+      - bash
+      - -c
+      - |
+        echo '=============== Running Checks Tools ===============' &&
+        
+        black --check . && echo 'Black OK' &&
+        
+        ruff check . && echo 'Ruff OK' &&
+
+        bandit -r . && echo 'Bandit OK' &&
+
+        safety check && echo 'Safety OK' &&
+
+        if [ -n "$SEMGREP_APP_TOKEN" ]; then
+          git config --global --add safe.directory /usr/src/app &&
+          semgrep ci && echo 'Semgrep OK'
+        else
+          echo 'Skipping Semgrep (no token provided)'
+        fi &&
+
+        pytest tests/ -v --tb=short --disable-warnings &&
+        
+        echo '=============== All Tests Completed ==============='
+
+      # To enable more strict type checking, use mypy:
+      # mypy python/ && echo 'MyPy OK'
+      # Original Semgrep cloud upload results version
+      # semgrep ci --supply-chain && echo 'Semgrep OK'

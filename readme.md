@@ -83,3 +83,37 @@ To spin up mock environment:
 docker-compose up --build mock
 docker-compose run --rm mock bash
 ```
+
+## Use with Other Repositories
+
+Add this `docker-compose.test.yml` to any Python project:
+
+```yaml
+services:
+  test:
+    image: ghcr.io/suizer98/python-test-kit:latest
+    volumes:
+      - .:/usr/src/app
+      - ./.git:/usr/src/app/.git
+    working_dir: /usr/src/app
+    environment:
+      - SEMGREP_APP_TOKEN=${SEMGREP_APP_TOKEN:-}
+```
+
+Then run:
+```bash
+docker-compose -f docker-compose.test.yml up test
+```
+
+## Manual Image Push
+
+Build and push the test image manually:
+
+```bash
+# Login to GitHub Container Registry
+docker login ghcr.io -u user -p $GITHUB_TOKEN_HERE
+
+# Build and push
+docker build -f Dockerfile.test -t ghcr.io/suizer98/python-test-kit:latest .
+docker push ghcr.io/suizer98/python-test-kit:latest
+```

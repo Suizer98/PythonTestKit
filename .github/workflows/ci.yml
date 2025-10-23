@@ -53,6 +53,10 @@ jobs:
         tags: ghcr.io/suizer98/python-test-kit:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        labels: |
+          org.opencontainers.image.title=Python Test Kit
+          org.opencontainers.image.description=A comprehensive Python testing toolkit
+          org.opencontainers.image.url=https://github.com/suizer98/PythonTestKit
         
     - name: Build and push test Docker image
       if: steps.changes.outputs.docker == 'true'
