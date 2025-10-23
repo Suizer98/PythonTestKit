@@ -91,7 +91,7 @@ Add this `docker-compose.test.yml` to any Python project:
 ```yaml
 services:
   test:
-    image: ghcr.io/suizer98/python-test-kit:latest
+    image: suizer98/python-test-kit:latest
     volumes:
       - .:/usr/src/app
       - ./.git:/usr/src/app/.git
@@ -110,10 +110,10 @@ docker-compose -f docker-compose.test.yml up test
 Build and push the test image manually:
 
 ```bash
-# Login to GitHub Container Registry
-docker login ghcr.io -u user -p $GITHUB_TOKEN_HERE
+# Login to Docker Hub
+docker login
 
 # Build and push
-docker build -f Dockerfile.test -t ghcr.io/suizer98/python-test-kit:latest .
-docker push ghcr.io/suizer98/python-test-kit:latest
+docker build -f Dockerfile.test -t suizer98/python-test-kit:latest .
+docker push suizer98/python-test-kit:latest
 ```
