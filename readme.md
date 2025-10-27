@@ -2,7 +2,7 @@
 
 A comprehensive Python testing toolkit with Docker-based CI/CD pipeline for code quality, security analysis, and automated testing.
 
-![Tech stacks](https://skillicons.dev/icons?i=python,docker,bash,linux)
+![Tech stacks](https://skillicons.dev/icons?i=python,docker,bash,linux,ubuntu,githubactions)
 
 ## Testing Pipeline
 
@@ -116,4 +116,5 @@ docker login
 # Build and push
 docker build -f Dockerfile.test -t suizer98/python-test-kit:latest .
 docker push suizer98/python-test-kit:latest
+
 ```
