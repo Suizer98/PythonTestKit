@@ -1,8 +1,10 @@
+
 # Python Test Kit
 
 A comprehensive Python testing toolkit with Docker-based CI/CD pipeline for code quality, security analysis, and automated testing.
 
 ![CI](https://github.com/suizer98/PythonTestKit/workflows/CI/badge.svg)
+![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/suizer98/PythonTestKit/main/.github/badges/coverage.json)
 
 ![Tech stacks](https://skillicons.dev/icons?i=python,docker,bash,linux,ubuntu,githubactions)
 
