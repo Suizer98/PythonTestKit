@@ -38,7 +38,7 @@ services:
           echo 'Skipping Semgrep (no token provided)'
         fi &&
 
-        pytest tests/ -v --tb=short --disable-warnings &&
+        pytest tests/ -v --tb=short --disable-warnings --cov=src --cov-report=html --cov-report=xml --cov-report=json --cov-report=term &&
         
         echo '=============== All Tests Completed ==============='
 

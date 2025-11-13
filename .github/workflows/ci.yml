@@ -13,7 +13,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     environment: test
-    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -89,32 +88,25 @@ jobs:
         SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
       continue-on-error: true
         
-    # - name: Run individual tool tests
-    #   run: |
-    #     echo "Testing Black (Code Formatting)"
-    #     docker compose run --rm test black check .
-        
-    #     echo "Testing Ruff (Linting & Import Sorting)"
-    #     docker compose run --rm test ruff check .
-        
-    #     echo "Testing Bandit (Security Analysis)"
-    #     docker compose run --rm test bandit -r .
-        
-    #     echo "Testing Safety (Dependency Vulnerabilities)"
-    #     docker compose run --rm test safety check
-        
-    #     echo "Testing Semgrep (Static Analysis & Supply Chain)"
-    #     docker compose run --rm test bash -c "git config --global --add safe.directory /usr/src/app && semgrep ci --dry-run"
-        
-    #     echo "Testing Pytest (Unit Tests)"
-    #     docker compose run --rm test pytest tests/
-        
-    # - name: Upload test results
-    #   uses: actions/upload-artifact@v4
-    #   if: always()
-    #   with:
-    #     name: test-results
-    #     path: |
-    #       .coverage
-    #       htmlcov/
-    #       pytest-report.html
+    - name: Publish coverage summary
+      if: always()
+      run: |
+        if [ -f coverage.json ]; then
+          COVERAGE=$(python3 -c "import json; data=json.load(open('coverage.json')); print(f\"{data['totals']['percent_covered']:.1f}\")")
+          echo "## 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage: ${COVERAGE}%**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports are available as artifacts." >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Upload test coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-coverage-reports
+        path: |
+          .coverage
+          htmlcov/
+          coverage.xml
+          coverage.json
+        retention-days: 30

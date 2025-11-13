@@ -2,6 +2,8 @@
 
 A comprehensive Python testing toolkit with Docker-based CI/CD pipeline for code quality, security analysis, and automated testing.
 
+![CI](https://github.com/suizer98/PythonTestKit/workflows/CI/badge.svg)
+
 ![Tech stacks](https://skillicons.dev/icons?i=python,docker,bash,linux,ubuntu,githubactions)
 
 ## Testing Pipeline
