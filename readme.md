@@ -8,7 +8,7 @@ A comprehensive Python testing toolkit with Docker-based CI/CD pipeline for code
 
 ![Tech stacks](https://skillicons.dev/icons?i=python,docker,bash,linux,ubuntu,githubactions)
 
-## Testing Pipeline
+## Testing Pipeline Steps
 
 ```mermaid
 flowchart TD
@@ -21,7 +21,7 @@ flowchart TD
     G --> H[All Checks Pass]
 ```
 
-## Testing
+## Testing Commands
 
 Run whole test suite:
 
