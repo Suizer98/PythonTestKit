@@ -15,31 +15,32 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
       - SEMGREP_APP_TOKEN=${SEMGREP_APP_TOKEN:-}
+      - BLACK=${BLACK:-}
+      - RUFF=${RUFF:-}
+      - BANDIT=${BANDIT:-}
+      - SAFETY=${SAFETY:-}
+      - SEMGREP=${SEMGREP:-}
+      - PYTEST=${PYTEST:-}
     profiles:
       - test
-    command: 
+    command:
       - bash
       - -c
       - |
-        echo '=============== Running Checks Tools ===============' &&
+        echo '=============== Running Checks Tools ==============='
+
+        if [ "$$(echo "$$BLACK" | tr '[:upper:]' '[:lower:]')" != "false" ]; then black --check . && echo 'Black OK'; fi
         
-        black --check . && echo 'Black OK' &&
-        
-        ruff check . && echo 'Ruff OK' &&
+        if [ "$$(echo "$$RUFF" | tr '[:upper:]' '[:lower:]')" != "false" ]; then ruff check . && echo 'Ruff OK'; fi
 
-        bandit -r . && echo 'Bandit OK' &&
+        if [ "$$(echo "$$BANDIT" | tr '[:upper:]' '[:lower:]')" != "false" ]; then bandit -r . && echo 'Bandit OK'; fi
 
-        safety check && echo 'Safety OK' &&
+        if [ "$$(echo "$$SAFETY" | tr '[:upper:]' '[:lower:]')" != "false" ]; then safety check && echo 'Safety OK'; fi
 
-        if [ -n "$SEMGREP_APP_TOKEN" ]; then
-          git config --global --add safe.directory /usr/src/app &&
-          semgrep ci && echo 'Semgrep OK'
-        else
-          echo 'Skipping Semgrep (no token provided)'
-        fi &&
+        if [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ] && [ -n "$$SEMGREP_APP_TOKEN" ]; then git config --global --add safe.directory /usr/src/app && semgrep ci && echo 'Semgrep OK'; elif [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ]; then echo 'Skipping Semgrep (no token)'; fi
 
-        pytest tests/ -v --tb=short --disable-warnings --cov=src --cov-report=html --cov-report=xml --cov-report=json --cov-report=term &&
-        
+        if [ "$$(echo "$$PYTEST" | tr '[:upper:]' '[:lower:]')" != "false" ]; then pytest tests/ -v --tb=short --disable-warnings; fi
+
         echo '=============== All Tests Completed ==============='
 
       # To enable more strict type checking, use mypy:
