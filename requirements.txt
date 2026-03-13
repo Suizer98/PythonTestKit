@@ -5,7 +5,7 @@ contourpy==1.2.1
 cycler==0.12.1
 easyprocess==1.1
 entrypoint2==1.1
-fonttools==4.53.0
+fonttools>=4.61.0
 georinex==1.16.2
 hatanaka==2.8.1
 importlib-resources==6.4.0
@@ -17,7 +17,7 @@ numpy>=1.24.0,<2.0.0
 packaging==24.1
 pandas==2.2.2
 patool==2.2.0
-pillow==10.3.0
+pillow>=10.4.0
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
 pytz==2024.1

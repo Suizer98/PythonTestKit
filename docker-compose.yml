@@ -29,17 +29,17 @@ services:
       - |
         echo '=============== Running Checks Tools ==============='
 
-        if [ "$$(echo "$$BLACK" | tr '[:upper:]' '[:lower:]')" != "false" ]; then black --check . && echo 'Black OK'; fi
-        
-        if [ "$$(echo "$$RUFF" | tr '[:upper:]' '[:lower:]')" != "false" ]; then ruff check . && echo 'Ruff OK'; fi
+        if [ "$$(echo "$$BLACK" | tr '[:upper:]' '[:lower:]')" != "false" ]; then black --check . && echo 'Black OK' || exit 1; fi
 
-        if [ "$$(echo "$$BANDIT" | tr '[:upper:]' '[:lower:]')" != "false" ]; then bandit -r . && echo 'Bandit OK'; fi
+        if [ "$$(echo "$$RUFF" | tr '[:upper:]' '[:lower:]')" != "false" ]; then ruff check . && echo 'Ruff OK' || exit 1; fi
 
-        if [ "$$(echo "$$SAFETY" | tr '[:upper:]' '[:lower:]')" != "false" ]; then safety check && echo 'Safety OK'; fi
+        if [ "$$(echo "$$BANDIT" | tr '[:upper:]' '[:lower:]')" != "false" ]; then bandit -r . && echo 'Bandit OK' || exit 1; fi
 
-        if [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ] && [ -n "$$SEMGREP_APP_TOKEN" ]; then git config --global --add safe.directory /usr/src/app && semgrep ci && echo 'Semgrep OK'; elif [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ]; then echo 'Skipping Semgrep (no token)'; fi
+        if [ "$$(echo "$$SAFETY" | tr '[:upper:]' '[:lower:]')" != "false" ]; then safety check && echo 'Safety OK' || exit 1; fi
 
-        if [ "$$(echo "$$PYTEST" | tr '[:upper:]' '[:lower:]')" != "false" ]; then pytest tests/ -v --tb=short --disable-warnings; fi
+        if [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ] && [ -n "$$SEMGREP_APP_TOKEN" ]; then git config --global --add safe.directory /usr/src/app && semgrep ci && echo 'Semgrep OK' || exit 1; elif [ "$$(echo "$$SEMGREP" | tr '[:upper:]' '[:lower:]')" != "false" ]; then echo 'Skipping Semgrep (no token)'; fi
+
+        if [ "$$(echo "$$PYTEST" | tr '[:upper:]' '[:lower:]')" != "false" ]; then pytest tests/ -v --tb=short --disable-warnings || exit 1; fi
 
         echo '=============== All Tests Completed ==============='
 
