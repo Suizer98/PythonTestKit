@@ -1,0 +1,20 @@
+ARG BASE_IMAGE=test-base:latest
+FROM ${BASE_IMAGE}
+
+ENV UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=auto
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock /app/
+
+# SHIP-HATS creds for the "dps" index in pyproject.toml
+RUN --mount=type=secret,id=ship_hats_username \
+    --mount=type=secret,id=ship_hats_password \
+    set -eu; \
+    export UV_INDEX_DPS_USERNAME="$(cat /run/secrets/ship_hats_username)"; \
+    export UV_INDEX_DPS_PASSWORD="$(cat /run/secrets/ship_hats_password)"; \
+    uv sync --frozen
+
+CMD ["black", "--check", "."]

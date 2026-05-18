@@ -1,0 +1,50 @@
+name: test-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  - master
+
+pr:
+  - master
+
+pool: SZpool
+
+variables:
+  - group: Secret variables
+  - name: projectName
+    value: test
+
+stages:
+  - stage: CI
+    displayName: Test full image
+    jobs:
+      - job: test
+        displayName: Test full image
+        steps:
+          - checkout: self
+
+          - task: DockerCompose@0
+            displayName: docker compose up --build test
+            env:
+              DOCKER_BUILDKIT: "1"
+              COMPOSE_DOCKER_CLI_BUILD: "1"
+              SHIP_HATS_USERNAME: $(SHIP_HATS_USERNAME)
+              SHIP_HATS_PASSWORD: $(SHIP_HATS_PASSWORD)
+            inputs:
+              action: Run a Docker Compose command
+              dockerComposeFile: $(Build.SourcesDirectory)/docker-compose.yml
+              dockerComposeCommand: up --build --abort-on-container-exit test
+              projectName: $(projectName)
+              dockerComposePath: docker-compose
+
+          - task: DockerCompose@0
+            displayName: docker compose down
+            env:
+              SHIP_HATS_USERNAME: $(SHIP_HATS_USERNAME)
+              SHIP_HATS_PASSWORD: $(SHIP_HATS_PASSWORD)
+            inputs:
+              action: Run a Docker Compose command
+              dockerComposeFile: $(Build.SourcesDirectory)/docker-compose.yml
+              dockerComposeCommand: down -v --remove-orphans --profile full
+              projectName: $(projectName)
+              dockerComposePath: docker-compose
+            condition: always()
