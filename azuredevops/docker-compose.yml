@@ -32,10 +32,7 @@ services:
         - username
         - password
     image: test:latest
-    depends_on:
-      - test-base
     environment:
       UV_INDEX_DPS_USERNAME: ${USERNAME:-}
       UV_INDEX_DPS_PASSWORD: ${PASSWORD:-}
-    volumes: *app-volumes
     working_dir: /app

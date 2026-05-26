@@ -6,7 +6,7 @@ trigger:
 pr:
   - master
 
-pool: SZpool
+pool: TESTpool
 
 variables:
   - group: Secret variables
@@ -23,28 +23,29 @@ stages:
           - checkout: self
 
           - task: DockerCompose@0
-            displayName: docker compose up --build test
+            displayName: docker compose build --no-cache test
             env:
               DOCKER_BUILDKIT: "1"
               COMPOSE_DOCKER_CLI_BUILD: "1"
-              SHIP_HATS_USERNAME: $(SHIP_HATS_USERNAME)
-              SHIP_HATS_PASSWORD: $(SHIP_HATS_PASSWORD)
+              TEST_USERNAME: $(TEST_USERNAME)
+              TEST_PASSWORD: $(TEST_PASSWORD)
             inputs:
               action: Run a Docker Compose command
               dockerComposeFile: $(Build.SourcesDirectory)/docker-compose.yml
-              dockerComposeCommand: up --build --abort-on-container-exit test
+              dockerComposeCommand: build --no-cache test
               projectName: $(projectName)
               dockerComposePath: docker-compose
 
           - task: DockerCompose@0
-            displayName: docker compose down
+            displayName: docker compose up test
             env:
-              SHIP_HATS_USERNAME: $(SHIP_HATS_USERNAME)
-              SHIP_HATS_PASSWORD: $(SHIP_HATS_PASSWORD)
+              DOCKER_BUILDKIT: "1"
+              COMPOSE_DOCKER_CLI_BUILD: "1"
+              TEST_USERNAME: $(TEST_USERNAME)
+              TEST_PASSWORD: $(TEST_PASSWORD)
             inputs:
               action: Run a Docker Compose command
               dockerComposeFile: $(Build.SourcesDirectory)/docker-compose.yml
-              dockerComposeCommand: down -v --remove-orphans --profile full
+              dockerComposeCommand: up --abort-on-container-exit test
               projectName: $(projectName)
               dockerComposePath: docker-compose
-            condition: always()
