@@ -47,7 +47,7 @@ jobs:
             - 'tests/**'
             - '*.py'
             
-    - name: Build and push main Docker image
+    - name: Build and push main Docker image to Docker Hub
       if: steps.changes.outputs.docker == 'true'
       uses: docker/build-push-action@v5
       with:
@@ -61,7 +61,7 @@ jobs:
           org.opencontainers.image.description=A comprehensive Python testing toolkit
           org.opencontainers.image.url=https://github.com/suizer98/PythonTestKit
         
-    - name: Build and push test Docker image
+    - name: Build and push test Docker image to Docker Hub
       if: steps.changes.outputs.docker == 'true'
       uses: docker/build-push-action@v5
       with:
@@ -72,7 +72,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         
-    - name: Prepare test image
+    - name: Prepare test image from Docker Hub
       run: |
         echo "Attempting to pull test image from registry..."
         docker pull suizer98/python-test-kit:latest || echo "Test image not found in registry, will build locally"
@@ -85,14 +85,14 @@ jobs:
         fi
       continue-on-error: true
         
-    - name: Run complete test suite
+    - name: Run complete test suite in container
       run: |
         docker compose --profile test run test
       env:
         SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
       continue-on-error: true
         
-    - name: Update coverage badge
+    - name: Update coverage badge status
       if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
       run: |
         docker compose --profile test run --rm test python3 -c "import json, os; data = json.load(open('coverage.json')); coverage = int(data['totals']['percent_covered']); color = 'brightgreen' if coverage >= 80 else 'yellow' if coverage >= 60 else 'orange' if coverage >= 40 else 'red'; badge = {'schemaVersion': 1, 'label': 'coverage', 'message': f'{coverage}%', 'color': color}; os.makedirs('.github/badges', exist_ok=True); json.dump(badge, open('.github/badges/coverage.json', 'w'), indent=2)"
