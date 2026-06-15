@@ -29,7 +29,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-      continue-on-error: true
         
     - name: Check for changes
       id: changes
@@ -83,14 +82,12 @@ jobs:
         else
           echo "Test image is available from registry"
         fi
-      continue-on-error: true
         
     - name: Run complete test suite in container
       run: |
         docker compose --profile test run test
       env:
         SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-      continue-on-error: true
         
     - name: Update coverage badge status
       if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
